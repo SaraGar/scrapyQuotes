@@ -54,6 +54,11 @@ class QuotespiderSpider(scrapy.Spider):
     def parse(self, response):
         self.extractData(response)
 
+        #We need to get the 'next page' link, only in case wholeSite = true
+        if self.wholeSite:
+            next = response.css('li.next > a::attr(href)').extract_first()
+            if next is not None:
+                yield scrapy.Request(response.urljoin(next))
     """
         Writes the text in a file, with proper format
     """
